@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
+		<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	</head>
+
+	<nav id="nav" class="navbar navbar-inverse" role="navigation">
+		<div class="container">
+	  	<!-- Brand and toggle get grouped for better mobile display -->
+		  <div class="navbar-header">
+				<a class="navbar-brand" href="/">TrashMate <span class="glyphicon glyphicon-trash"></span></a>
+		  </div>
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="navbar-nav nav navbar-right">
+					<li><a href="{{url_for("fullBins")}}">Full bins</a></li>
+					<li><a href="{{url_for("getTrash",trashID=33)}}">Specific bin</a></li>
+					<li><a href="{{url_for("qrPrint")}}">QR Codes</a></li>
+				</ul>
+
+		  <!-- Collect the nav links, forms, and other content for toggling -->
+		  </div><!-- /.navbar-collapse -->
+		</div>
+	</nav>
+
+	<div class="container">
+		{% with messages = get_flashed_messages() 	%}
+			{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-success">{{ message }}</div>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+		{% block content %}
+        {% endblock %}
+	</div>
+
+
+</html>

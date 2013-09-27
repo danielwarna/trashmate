@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" href="/static/leaflet.awesome-markers.css">
+	<script src="/static/leaflet.awesome-markers.js"></script>
+
+
+	<div id="buttonRow" class="row"> </div>
+
+	<div class="row" style="min-height: 10px;"> </div>
+
+	<div class="row">
+		<div id="map"> </div>
+	</div>
+
+
+		<!--<a href="url_for('trashFull', trashID=trash.dataID)">
+			<button id="mainButton" action="submit" type="button" class="btn btn-primary btn-lg btn-block">Report the full Bin</button>
+		</a>-->
+
+	<script type="text/javascript">
+		navigator.geolocation.getCurrentPosition(showPosition)
+
+		function showPosition(position){
+			console.log(position)
+			var posArray = [position.coords.latitude, position.coords.longitude]
+
+			var map = L.map('map').setView(posArray, 15);
+
+			L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+				maxZoom: 18,
+			}).addTo(map);
+
+			//map.setZoom(16)
+			//var button1 = '<a href="'
+			//Add the url for the button here
+			//var button2 = '"><button id="mainButton" action="submit" type="button" class="btn btn-primary btn-lg btn-block">Click here if the bin is full</button></a>'
+
+			var button1 = '<form action="'
+			//Add the url for the button here
+			var button2 = '" method="get"><button id="mainButton" type="submit" class="btn btn-primary btn-lg btn-block">Click here if the bin is full</button></form>'
+
+			var myUrl = "/findclosesttrash?long="+position.coords.longitude+"&lat="+position.coords.latitude
+			var myUrl2 = "/findclosetrash?long="+position.coords.longitude+"&lat="+position.coords.latitude
+			console.log(myUrl)
+			console.log(myUrl2)
+			$.ajax({
+				// The link we are accessing.
+				url: myUrl,
+				// The type of request.
+				type: "get",
+				// The type of data that is getting returned.
+				dataType: "json",
+				success: function( strData ){
+					console.log("AJAX - success()");
+					
+					// Load the content in to the page.
+					console.log(strData);
+					var element = strData
+					console.log(element)
+					
+					var marker = L.marker([element.location[1],element.location[0]], {icon: L.AwesomeMarkers.icon({icon: 'trash', color: 'blue'}) })
+					marker.addTo(map)
+					marker.bindPopup("Trasbin #" + element.dataID)
+
+					var user = L.marker([position.coords.latitude, position.coords.longitude],{icon: L.AwesomeMarkers.icon({icon: 'user', color: 'green'}) })
+					var popup = L.popup().setContent('<p><b>Hello, welcome to TrashMate</b> <br>You are here.</p><p style="font-size:10px">Our algorithms have concluded that the blue trashbin <br> is the right one for you, however feel free to pick<br> another one (purple) of if we are wrong</p>')
+					popup.closeButton = true;
+					popup.closeOnClick = true;
+					popup.maxWidth = 100
+
+					user.addTo(map)
+					var visited=getCookie("trashmate");
+					console.log(visited)
+					if (visited!=null && visited!=""){
+						user.bindPopup(popup);
+					}
+					else {
+						user.bindPopup(popup).openPopup();
+						document.cookie = 'trashmate=visited; expires=Thu, 2 Aug 2020 20:47:11 UTC; path=/'
+					}
+
+					$("#buttonRow").append(button1 + "/trash/"+element.dataID+"/full" + button2)
+
+
+					$.ajax({
+						// The link we are accessing.
+						url: myUrl2,
+						// The type of request.
+						type: "get",
+						// The type of data that is getting returned.
+						dataType: "json",
+						success: function( strData ){
+							console.log("AJAX - success()");
+							
+							// Load the content in to the page.
+							console.log(strData);
+							var element = strData
+							var bins = strData["trashbins"]
+							console.log(bins)
+							for (var i = bins.length - 1; i >= 0; i--) {
+								var element = bins[i]
+								var marker = L.marker([element.location[1],element.location[0]], {icon: L.AwesomeMarkers.icon({icon: 'trash', color: 'purple'}) })
+								marker.addTo(map)
+								marker.bindPopup("Trasbin #" + element.dataID)
+							};
+						}
+					});
+				}
+			});
+		}
+	
+	function getCookie(c_name){
+		var c_value = document.cookie;
+		var c_start = c_value.indexOf(" " + c_name + "=");
+		if (c_start == -1){
+			c_start = c_value.indexOf(c_name + "=");
+		}
+		if (c_start == -1){
+			c_value = null;
+		}
+		else{
+			c_start = c_value.indexOf("=", c_start) + 1;
+			var c_end = c_value.indexOf(";", c_start);
+			if (c_end == -1){
+				c_end = c_value.length;
+			}
+		c_value = unescape(c_value.substring(c_start,c_end));
+		}	
+		return c_value;
+	}
+
+	</script>
+
+
+{% endblock %}

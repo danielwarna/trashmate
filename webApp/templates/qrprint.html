@@ -1,0 +1,41 @@
+<<html>
+<head>
+	<title></title>
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+	<div class="container">
+		<div class="row"> 
+			{% if page%}
+			<a href="{{'/qrprint'~"?p="~(page-1) }}">Previous Page</a>
+			<a href="{{'/qrprint'~"?p="~(page+1) }}">Next Page </a>
+			{% else %}
+			<a href="{{'/qrprint'~"?p="~(1) }}">Next Page </a>
+			{% endif %}
+
+		</div>
+		<div class="row">
+		{% if bin%}
+			{% if page%}
+				<div class="col-md-6">
+					<img class="qr" src="{{url_for('static', filename='qr/'~bin.dataID~'.png')}}"></img>
+					<p> {{ bin.dataID}}  long/lat {{bin.location}}</p>
+				</div>
+			{% endif %}
+		{% else %}
+		{% for bin in bins %}
+			<div class="col-md-4">
+				<img  class="qr" src="{{url_for('static', filename='qr/'~bin.dataID~'.png')}}"></img>
+				<p> {{ bin.dataID}}  long/lat {{bin.location}}</p>
+
+			</div>
+		{% endfor %}
+
+		{% endif %}
+		</div>
+	</div>
+
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+	<div class="col-sm-12 centered">
+		<h1 id="header"> Welcome to wastebin {{ trash.dataID}}</h1>
+	</div>
+
+	<div class="col-sm-12 centered">
+		{% if trash.isFull %}
+			<p> The fact that this bin is full har already be reported to us, and it's currently our highest priority to empty it </p>
+			<button id="mainButton" action="submit" type="button" class="btn btn-primary btn-lg btn-block" disabled="disabled">Waiting to be emptied</button>
+		
+		{% else %}
+		<p> Do you think that the bin is full, report it with the button below and we'll fix this <p>
+		<form action="{{url_for('trashFull', trashID=trash.dataID)}}">
+			<button id="mainButton" type="submit" class="btn btn-primary btn-lg btn-block">Report full bin</button>
+		</form>
+		{% endif%}
+	</div>
+</div>
+
+
+{% endblock %}

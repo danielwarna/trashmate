@@ -1,0 +1,35 @@
+/*style.css*/
+
+/*https://kuler.adobe.com/my-vintage-color-theme-2858782/*/
+
+* {
+  border-radius: 0 !important;
+}
+
+body{
+	background-color: #F4F5ED !important
+}
+
+#header {
+	text-align: center;
+}
+
+#mainButton {
+	min-height: 80px;
+	background-color: #64B6B1;
+	color: #46433A;
+	color: black;
+	font-size: 24px;
+}
+
+#nav {
+	background-color: #46433A;
+
+}
+
+#nav .brand {
+	color: #DED4B9;
+	background-color: #46433A;
+}
+
+#map { height: 300px; }
